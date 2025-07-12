@@ -1,7 +1,7 @@
 print('Hello there')
 
-def hello(a, b, c):
-  print('Hello there')
+def hello(x, b, c):
+  print('Hello there', x)
   print('Hi there')
-  a = 2
-  b = 5 
+  x = 2
+  b= 5

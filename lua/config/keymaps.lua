@@ -1,5 +1,9 @@
 vim.keymap.set({"n"}, "<leader>-", "<cmd>Oil --float<CR>")  --might wanna exclude/include insert mode
 
+
+vim.keymap.set({"n"}, "gl", function() vim.diagnostic.open_float() end, {desc = "Open diagnostics in a float"})
+
+
 vim.keymap.set({"n"}, "<leader>w", "<cmd>:w<CR>")
 
 
