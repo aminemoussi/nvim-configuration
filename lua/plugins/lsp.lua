@@ -193,10 +193,10 @@ return {
 
 		-- Integrate with your existing completion setup
 		-- If you're using nvim-cmp, uncomment the next line:
-		capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+		-- capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
 		-- If you're using blink.cmp, uncomment the next line:
-		-- capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
+		capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
 
 		-- Enable the following language servers
 		--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -212,7 +212,7 @@ return {
 			rust_analyzer = {},
 			-- marksman = {},
 			clangd = {},
-			ts_ls = {},
+			-- ts_ls = {},
 			-- gopls = {},
 			-- pylsp = {
 			-- 	plugins = {
@@ -275,6 +275,8 @@ return {
 			"prettier",
 			"ruff",
 			"clang-format",
+			"pyright",
+			-- "debugpy",
 			-- "goimports",   --sudo pacman -S go first
 		})
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
