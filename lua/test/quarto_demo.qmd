@@ -1,0 +1,647 @@
+---
+title: "Complete Quarto Demo: Data Science in Neovim"
+author: "Your Name"
+date: "2025-07-22"
+format: 
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    code-tools: true
+  pdf:
+    geometry:
+      - top=30mm
+      - left=20mm
+jupyter: python3
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# Introduction
+
+This document demonstrates the full capabilities of the Quarto+Neovim setup, showcasing:
+
+- Multi-language code execution
+- Rich visualizations and outputs
+- Interactive widgets
+- Mathematical equations
+- Cross-references and citations
+- Mixed programming languages
+
+## Mathematical Expressions
+
+Using `nabla.nvim`, you can preview LaTeX equations live:
+
+$$
+\begin{aligned}
+\hat{\beta} &= (X^T X)^{-1} X^T y \\
+\mathcal{L}(\theta) &= \sum_{i=1}^n \log p(x_i | \theta) \\
+\nabla_\theta J(\theta) &= \frac{1}{m} \sum_{i=1}^m (\hat{y}^{(i)} - y^{(i)}) x^{(i)}
+\end{aligned}
+$$
+
+The Bayes' theorem: $P(A|B) = \frac{P(B|A)P(A)}{P(B)}$
+
+# Python Data Analysis
+
+## Setup and Data Loading
+
+```{python}
+#| label: setup-python
+#| echo: true
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import make_classification, make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import accuracy_score, r2_score
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+# Set style for matplotlib
+plt.style.use('seaborn-v0_8')
+sns.set_palette("husl")
+
+print("📊 Libraries loaded successfully!")
+```
+
+```{python}
+#| label: generate-data
+#| fig-cap: "Synthetic dataset overview"
+
+# Generate synthetic classification dataset
+X_clf, y_clf = make_classification(
+    n_samples=1000, 
+    n_features=10, 
+    n_informative=5,
+    n_redundant=2,
+    n_clusters_per_class=1,
+    random_state=42
+)
+
+# Generate synthetic regression dataset
+X_reg, y_reg = make_regression(
+    n_samples=500,
+    n_features=1,
+    noise=10,
+    random_state=42
+)
+
+# Create DataFrames
+df_clf = pd.DataFrame(X_clf, columns=[f'feature_{i}' for i in range(10)])
+df_clf['target'] = y_clf
+
+df_reg = pd.DataFrame(X_reg, columns=['x'])
+df_reg['y'] = y_reg
+
+print(f"Classification dataset shape: {df_clf.shape}")
+print(f"Regression dataset shape: {df_reg.shape}")
+
+# Display first few rows
+df_clf.head()
+```
+
+## Exploratory Data Analysis
+
+```{python}
+#| label: eda-plots
+#| fig-cap: "Exploratory Data Analysis Plots"
+#| fig-width: 12
+#| fig-height: 8
+
+# Create subplot figure
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+# Plot 1: Feature correlation heatmap
+corr_matrix = df_clf.select_dtypes(include=[np.number]).corr()
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, ax=axes[0,0])
+axes[0,0].set_title('Feature Correlation Matrix')
+
+# Plot 2: Target distribution
+df_clf['target'].value_counts().plot(kind='bar', ax=axes[0,1], color=['skyblue', 'lightcoral'])
+axes[0,1].set_title('Target Distribution')
+axes[0,1].set_xlabel('Class')
+axes[0,1].set_ylabel('Count')
+
+# Plot 3: Feature distributions by target
+sns.boxplot(data=df_clf, x='target', y='feature_0', ax=axes[1,0])
+axes[1,0].set_title('Feature 0 Distribution by Target')
+
+# Plot 4: Regression data scatter
+axes[1,1].scatter(df_reg['x'], df_reg['y'], alpha=0.6, color='green')
+axes[1,1].set_title('Regression Dataset')
+axes[1,1].set_xlabel('X')
+axes[1,1].set_ylabel('Y')
+
+plt.tight_layout()
+plt.show()
+```
+
+## Interactive Plotly Visualizations
+
+```{python}
+#| label: interactive-plots
+#| fig-cap: "Interactive Plotly Visualizations"
+
+# Create interactive 3D scatter plot
+fig = go.Figure()
+
+# Add traces for each class
+for class_val in [0, 1]:
+    mask = df_clf['target'] == class_val
+    fig.add_trace(
+        go.Scatter3d(
+            x=df_clf.loc[mask, 'feature_0'],
+            y=df_clf.loc[mask, 'feature_1'], 
+            z=df_clf.loc[mask, 'feature_2'],
+            mode='markers',
+            name=f'Class {class_val}',
+            marker=dict(size=4, opacity=0.7)
+        )
+    )
+
+fig.update_layout(
+    title="3D Feature Space Visualization",
+    scene=dict(
+        xaxis_title="Feature 0",
+        yaxis_title="Feature 1", 
+        zaxis_title="Feature 2"
+    ),
+    width=800,
+    height=600
+)
+
+fig.show()
+```
+
+## Machine Learning Models
+
+```{python}
+#| label: ml-models
+#| echo: true
+
+# Classification Model
+X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(
+    X_clf, y_clf, test_size=0.2, random_state=42, stratify=y_clf
+)
+
+clf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+clf_model.fit(X_train_clf, y_train_clf)
+clf_pred = clf_model.predict(X_test_clf)
+clf_accuracy = accuracy_score(y_test_clf, clf_pred)
+
+# Regression Model  
+X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(
+    X_reg, y_reg, test_size=0.2, random_state=42
+)
+
+reg_model = LinearRegression()
+reg_model.fit(X_train_reg, y_train_reg)
+reg_pred = reg_model.predict(X_test_reg)
+reg_r2 = r2_score(y_test_reg, reg_pred)
+
+print(f"🎯 Classification Accuracy: {clf_accuracy:.3f}")
+print(f"📈 Regression R²: {reg_r2:.3f}")
+```
+
+```{python}
+#| label: model-results
+#| fig-cap: "Model Performance Visualization"
+#| fig-width: 12
+#| fig-height: 5
+
+fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+# Feature importance plot
+feature_names = [f'feature_{i}' for i in range(10)]
+importance_df = pd.DataFrame({
+    'feature': feature_names,
+    'importance': clf_model.feature_importances_
+}).sort_values('importance', ascending=True)
+
+axes[0].barh(importance_df['feature'], importance_df['importance'])
+axes[0].set_title('Feature Importance (Random Forest)')
+axes[0].set_xlabel('Importance')
+
+# Regression predictions vs actual
+axes[1].scatter(y_test_reg, reg_pred, alpha=0.6, color='blue')
+axes[1].plot([y_test_reg.min(), y_test_reg.max()], 
+             [y_test_reg.min(), y_test_reg.max()], 
+             'r--', lw=2)
+axes[1].set_xlabel('Actual Values')
+axes[1].set_ylabel('Predicted Values')
+axes[1].set_title(f'Regression Results (R² = {reg_r2:.3f})')
+
+plt.tight_layout()
+plt.show()
+```
+
+# R Integration
+
+Now let's switch to R for statistical analysis:
+
+```{r}
+#| label: setup-r
+#| echo: true
+
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(DT)
+library(corrplot)
+
+# Create some sample data
+set.seed(42)
+n <- 500
+
+data <- tibble(
+  x = rnorm(n, mean = 50, sd = 15),
+  group = sample(c("A", "B", "C"), n, replace = TRUE),
+  y = 2 * x + rnorm(n, mean = 0, sd = 10) + 
+      case_when(
+        group == "A" ~ 0,
+        group == "B" ~ 20, 
+        group == "C" ~ -15
+      ),
+  z = x^2 / 100 + rnorm(n, mean = 0, sd = 5)
+)
+
+cat("📊 R data generated successfully!\n")
+head(data)
+```
+
+```{r}
+#| label: r-visualization
+#| fig-cap: "Advanced R Visualizations"
+#| fig-width: 10
+#| fig-height: 8
+
+# Create a complex ggplot
+p1 <- data %>%
+  ggplot(aes(x = x, y = y, color = group)) +
+  geom_point(alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", se = TRUE) +
+  facet_wrap(~group) +
+  theme_minimal() +
+  labs(
+    title = "Relationship between X and Y by Group",
+    x = "X Variable", 
+    y = "Y Variable",
+    color = "Group"
+  ) +
+  theme(
+    plot.title = element_text(size = 14, hjust = 0.5),
+    legend.position = "bottom"
+  )
+
+print(p1)
+```
+
+```{r}
+#| label: statistical-analysis
+#| echo: true
+
+# Statistical modeling
+model <- lm(y ~ x * group, data = data)
+summary(model)
+
+# ANOVA
+anova_result <- aov(y ~ group, data = data)
+summary(anova_result)
+```
+
+```{r}
+#| label: interactive-r-plot
+#| fig-cap: "Interactive R Plot with Plotly"
+
+# Create interactive plot
+p_interactive <- data %>%
+  plot_ly(x = ~x, y = ~y, z = ~z, color = ~group, 
+          type = "scatter3d", mode = "markers",
+          marker = list(size = 4, opacity = 0.7)) %>%
+  layout(
+    title = "3D Scatter Plot with R and Plotly",
+    scene = list(
+      xaxis = list(title = "X"),
+      yaxis = list(title = "Y"), 
+      zaxis = list(title = "Z")
+    )
+  )
+
+p_interactive
+```
+
+# Julia Integration
+
+For high-performance numerical computing:
+
+```{julia}
+#| label: setup-julia
+
+using Plots, DataFrames, Statistics, LinearAlgebra, Random
+using StatsPlots, PlotlyJS
+
+plotlyjs()  # Use PlotlyJS backend
+
+Random.seed!(42)
+
+# Generate data
+n = 1000
+x = randn(n)
+y = 2 .* x .+ randn(n) * 0.5
+noise = randn(n) * 0.1
+
+df = DataFrame(x = x, y = y, noise = noise)
+
+println("🚀 Julia setup complete!")
+first(df, 5)
+```
+
+```{julia}
+#| label: julia-performance
+#| fig-cap: "High-Performance Computing with Julia"
+
+# Demonstrate Julia's performance with matrix operations
+function benchmark_operation(n)
+    A = randn(n, n)
+    B = randn(n, n)
+    @time C = A * B  # Matrix multiplication
+    return size(C)
+end
+
+println("Matrix multiplication benchmarks:")
+for n in [100, 500, 1000]
+    println("Matrix size: $(n)×$(n)")
+    result = benchmark_operation(n)
+    println("Result size: $result\n")
+end
+```
+
+```{julia}
+#| label: julia-visualization
+#| fig-cap: "Julia Plotting Capabilities"
+
+# Create beautiful plots with Julia
+p1 = scatter(df.x, df.y, 
+            alpha=0.6, 
+            title="Scatter Plot with Julia",
+            xlabel="X", 
+            ylabel="Y",
+            legend=false,
+            color=:viridis)
+
+# Add regression line
+x_range = range(minimum(df.x), maximum(df.x), length=100)
+β₁, β₀ = [ones(length(df.x)) df.x] \ df.y  # Linear regression
+y_pred = β₀ .+ β₁ .* x_range
+
+plot!(p1, x_range, y_pred, 
+      linewidth=3, 
+      color=:red, 
+      label="Regression Line")
+
+display(p1)
+
+println("Regression coefficients: β₀ = $(round(β₀, digits=3)), β₁ = $(round(β₁, digits=3))")
+```
+
+# Bash Integration
+
+For system operations and data processing:
+
+```{bash}
+#| label: system-info
+#| echo: true
+
+echo "🖥️  System Information:"
+echo "OS: $(uname -s)"
+echo "Kernel: $(uname -r)"
+echo "Date: $(date)"
+echo "User: $(whoami)"
+echo "Working Directory: $(pwd)"
+echo ""
+
+echo "📁 Directory Contents:"
+ls -la | head -10
+```
+
+```{bash}
+#| label: data-processing
+#| echo: true
+
+echo "🔍 Creating sample data file..."
+cat << EOF > sample_data.csv
+name,age,salary,department
+Alice,25,50000,Engineering
+Bob,30,60000,Marketing
+Carol,35,70000,Engineering
+David,28,55000,Sales
+Eve,32,65000,Marketing
+EOF
+
+echo "Sample data created:"
+cat sample_data.csv
+
+echo ""
+echo "📊 Data processing with command line tools:"
+echo "Number of records: $(wc -l < sample_data.csv)"
+echo "Engineering employees:"
+grep "Engineering" sample_data.csv
+```
+
+# Cross-Language Data Sharing
+
+Demonstrating how data flows between languages:
+
+```{python}
+#| label: python-to-r-data
+#| echo: true
+
+# Create data in Python
+import pandas as pd
+import numpy as np
+
+python_data = pd.DataFrame({
+    'experiment': range(1, 101),
+    'treatment': np.random.choice(['A', 'B'], 100),
+    'outcome': np.random.normal(10, 3, 100)
+})
+
+# Save for R to use
+python_data.to_csv('shared_data.csv', index=False)
+print("✅ Data saved from Python")
+print(python_data.head())
+```
+
+```{r}
+#| label: r-from-python-data
+#| echo: true
+
+# Load data created in Python
+shared_data <- read_csv('shared_data.csv', show_col_types = FALSE)
+
+cat("✅ Data loaded in R\n")
+print(head(shared_data))
+
+# Perform analysis
+summary_stats <- shared_data %>%
+  group_by(treatment) %>%
+  summarise(
+    n = n(),
+    mean_outcome = mean(outcome),
+    sd_outcome = sd(outcome),
+    .groups = 'drop'
+  )
+
+print(summary_stats)
+```
+
+# Advanced Features Demo
+
+## Code Folding and Execution Options
+
+```{python}
+#| label: advanced-demo
+#| code-fold: true
+#| code-summary: "Click to view advanced visualization code"
+#| fig-cap: "Advanced Multi-Panel Visualization"
+#| fig-width: 14
+#| fig-height: 10
+
+# This code is folded by default - users can expand to see it
+from matplotlib.patches import Rectangle
+import matplotlib.patches as mpatches
+
+# Create a complex multi-panel figure
+fig = plt.figure(figsize=(16, 12))
+gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+
+# Panel 1: Time series
+ax1 = fig.add_subplot(gs[0, :])
+t = np.linspace(0, 4*np.pi, 1000)
+signal1 = np.sin(t) + 0.5*np.sin(3*t) + np.random.normal(0, 0.1, len(t))
+signal2 = np.cos(t) + 0.3*np.cos(5*t) + np.random.normal(0, 0.1, len(t))
+ax1.plot(t, signal1, label='Signal 1', alpha=0.8)
+ax1.plot(t, signal2, label='Signal 2', alpha=0.8)
+ax1.set_title('Time Series Analysis', fontsize=14, fontweight='bold')
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+
+# Panel 2: Heatmap
+ax2 = fig.add_subplot(gs[1, 0])
+data_2d = np.random.multivariate_normal([0, 0], [[1, 0.5], [0.5, 1]], 100)
+hist, xedges, yedges = np.histogram2d(data_2d[:, 0], data_2d[:, 1], bins=20)
+im = ax2.imshow(hist.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], 
+                cmap='viridis', aspect='auto')
+ax2.set_title('2D Histogram', fontweight='bold')
+plt.colorbar(im, ax=ax2, fraction=0.046, pad=0.04)
+
+# Panel 3: Pie chart
+ax3 = fig.add_subplot(gs[1, 1])
+sizes = [30, 25, 20, 15, 10]
+labels = ['A', 'B', 'C', 'D', 'E']
+colors = plt.cm.Set3(np.arange(len(sizes)))
+wedges, texts, autotexts = ax3.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+ax3.set_title('Distribution', fontweight='bold')
+
+# Panel 4: Box plot
+ax4 = fig.add_subplot(gs[1, 2])
+box_data = [np.random.normal(0, 1, 100), 
+            np.random.normal(1, 1.5, 100), 
+            np.random.normal(-1, 0.5, 100)]
+bp = ax4.boxplot(box_data, patch_artist=True, labels=['Group 1', 'Group 2', 'Group 3'])
+colors = ['lightblue', 'lightgreen', 'lightcoral']
+for patch, color in zip(bp['boxes'], colors):
+    patch.set_facecolor(color)
+ax4.set_title('Box Plot Comparison', fontweight='bold')
+ax4.grid(True, alpha=0.3)
+
+# Panel 5: Scatter with regression
+ax5 = fig.add_subplot(gs[2, :2])
+x_scatter = np.random.normal(0, 1, 200)
+y_scatter = 2*x_scatter + np.random.normal(0, 1, 200)
+colors_scatter = np.random.rand(200)
+scatter = ax5.scatter(x_scatter, y_scatter, c=colors_scatter, alpha=0.6, cmap='plasma')
+z = np.polyfit(x_scatter, y_scatter, 1)
+p = np.poly1d(z)
+ax5.plot(x_scatter, p(x_scatter), "r--", alpha=0.8, linewidth=2)
+ax5.set_title('Scatter Plot with Regression', fontweight='bold')
+ax5.set_xlabel('X Variable')
+ax5.set_ylabel('Y Variable')
+plt.colorbar(scatter, ax=ax5, fraction=0.046, pad=0.04)
+
+# Panel 6: Bar chart
+ax6 = fig.add_subplot(gs[2, 2])
+categories = ['Cat 1', 'Cat 2', 'Cat 3', 'Cat 4']
+values1 = [23, 34, 45, 32]
+values2 = [12, 25, 35, 28]
+x_pos = np.arange(len(categories))
+width = 0.35
+ax6.bar(x_pos - width/2, values1, width, label='Series 1', alpha=0.8, color='steelblue')
+ax6.bar(x_pos + width/2, values2, width, label='Series 2', alpha=0.8, color='orange')
+ax6.set_xlabel('Categories')
+ax6.set_ylabel('Values')
+ax6.set_title('Grouped Bar Chart', fontweight='bold')
+ax6.set_xticks(x_pos)
+ax6.set_xticklabels(categories)
+ax6.legend()
+ax6.grid(True, alpha=0.3, axis='y')
+
+plt.suptitle('Comprehensive Data Visualization Dashboard', fontsize=16, fontweight='bold')
+plt.show()
+```
+
+## Dynamic Content and Variables
+
+```{python}
+#| label: dynamic-content
+#| echo: false
+
+# This cell generates dynamic content
+current_time = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+total_data_points = len(df_clf) + len(df_reg) + len(shared_data)
+languages_used = ["Python", "R", "Julia", "Bash"]
+
+print(f"📊 **Analysis Summary Report**")
+print(f"Generated on: {current_time}")
+print(f"Total data points analyzed: {total_data_points:,}")
+print(f"Languages demonstrated: {', '.join(languages_used)}")
+print(f"Classification accuracy achieved: {clf_accuracy:.1%}")
+print(f"Regression R² score: {reg_r2:.3f}")
+```
+
+# Conclusion
+
+This comprehensive demo showcases the power of the Quarto+Neovim setup:
+
+## Key Capabilities Demonstrated
+
+1. **Multi-language Support**: Seamless integration of Python, R, Julia, and Bash
+2. **Rich Visualizations**: Static plots, interactive charts, and 3D visualizations  
+3. **Machine Learning**: Model training, evaluation, and visualization
+4. **Mathematical Typesetting**: LaTeX equations with live preview
+5. **Code Organization**: Folding, cross-references, and execution control
+6. **Data Sharing**: Cross-language data flow and processing
+7. **Dynamic Content**: Variables and computed values in text
+8. **Professional Output**: Publication-ready HTML and PDF formats
+
+## Workflow Benefits
+
+- **Reproducible Research**: Version-controlled, text-based format
+- **Interactive Development**: Execute code chunks individually like Jupyter
+- **Publication Ready**: Multiple output formats (HTML, PDF, slides, websites)
+- **Editor Power**: Full Neovim editing capabilities
+- **Performance**: Julia and R integration for specialized computing
+
+This setup provides a superior alternative to traditional Jupyter notebooks with enhanced editing, version control, and multi-format publishing capabilities.
+
+---
+
+*Generated with Quarto in Neovim - The future of computational documents! 🚀*
