@@ -18,6 +18,6 @@ def primes(n: int):
     return res
 
 
-xs = primes(100)
+xs = primes(10)
 
 print(xs)

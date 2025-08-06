@@ -28,7 +28,7 @@ fig, ax = plt.subplots(
   subplot_kw = {'projection': 'polar'} 
 )
 ax.plot(theta, r);
-ax.set_rticks([0.5, 1, 1.5, 2]);
+ax.set_xticks([0.5, 1, 1.5, 2]);
 ax.grid(True);
 plt.show()
 ```
@@ -36,7 +36,6 @@ plt.show()
 
 
 ```{python}
-
 
 
 import numpy as np
@@ -56,7 +55,6 @@ xs
 
 import numpy as np
 
-
 r = np.arange(0, 2, 0.1)
 theta = 2 * np.pi * r
 
@@ -66,4 +64,35 @@ theta
 
 
 
+```{python}
+
+%matplotlib inline
+
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create a synthetic image (simulating CV preprocessing)
+img = np.random.randint(0, 255, (256, 256, 3), dtype=np.uint8)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Display original and processed
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+ax1.imshow(img)
+ax1.set_title('Original')
+ax2.imshow(gray, cmap='gray')
+ax2.set_title('Grayscale')
+ax2.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+```
+
+```{python}
+
+
+
+```
 
