@@ -1,0 +1,20 @@
+---
+title: "Testing rust + python chuncks"
+format:
+  html:
+    code-fold: true
+execute:
+  engine: jupyter
+---
+
+
+```{rust}
+println!("Hello from Rust in Quarto!");
+```
+
+
+```{python}
+print("hi py.")
+
+```
+

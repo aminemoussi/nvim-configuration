@@ -82,7 +82,7 @@ return {
 
 				-- Rename the variable under your cursor.
 				--  Most Language Servers support renaming across files, etc.
-				map("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
+				--map("<leader>rn ", vim.lsp.buf.rename, "[R]e[n]ame")
 
 				-- Execute a code action, usually your cursor needs to be on top of an error
 				-- or a suggestion from your LSP for this to activate.
@@ -193,10 +193,10 @@ return {
 
 		-- Integrate with your existing completion setup
 		-- If you're using nvim-cmp, uncomment the next line:
-		-- capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+		capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
 		-- If you're using blink.cmp, uncomment the next line:
-		capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
+		-- capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
 
 		-- Enable the following language servers
 		--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.

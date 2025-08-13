@@ -1,5 +1,13 @@
 return {
-  'mrcjkb/rustaceanvim',
-  version = '^6', -- Recommended
-  lazy = false, -- This plugin is already lazy
+	"mrcjkb/rustaceanvim",
+	ft = "rust",
+	version = "^4",
+	config = function()
+		vim.g.rustaceanvim = {
+			tools = {
+				autoSetHints = true,
+				hover_with_actions = true,
+			},
+		}
+	end,
 }
