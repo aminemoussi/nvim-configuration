@@ -1,0 +1,11 @@
+---
+title: "part 2"
+format: html
+---
+
+# Math/Latex symbols:
+
+μ = ρ
+
+$λ$ = $ψ$ 
+
