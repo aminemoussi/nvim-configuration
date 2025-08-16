@@ -23,13 +23,14 @@ return {
 			local fortune = require("alpha.fortune")
 			dashboard.section.footer.val = fortune({
 				fortune_list = {
-					{ "You otter be proud of yourself!", "", "— 🦦" },
-					{ "Hello from the otter slide!", "", "— Otterdele" },
 					{ "With great power, Comes Great Responsibility!", "", "— 🕷️🧓🏻 Uncle Ben" },
 					{ "U GUUD MUUUD!", "", "— 👁️👄👁️ Rakai" },
-					{ "To otter space!", "", "— 🦦" },
-					{ "What if I say I'm not like the otters?", "", "— Foo Fighters" },
 					{ "Nothing is im-paw-sible 🐾", "", "— 🐕" },
+					{ "Facts only, no cap in the chat!", "", "— AMP 🦍" },
+					{ "Hold up, let me cook—y’all ain’t ready for this!", "", "— Agent00 🚗" },
+					{ "We outside! No days off.", "", "— Fanum 🏙️" },
+					{ "Hold on Chat... It's HEAVY!!", "", "— Fanum 🏙️" },
+					{ "We move different", "", "— Fanum 🏙️" },
 				},
 			})
 

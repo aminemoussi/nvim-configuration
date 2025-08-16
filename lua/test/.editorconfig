@@ -4,3 +4,7 @@ root = true
 indent_size = 4
 indet_type = space
 
+[*.cpp]
+indent_size = 2
+indet_type = space
+

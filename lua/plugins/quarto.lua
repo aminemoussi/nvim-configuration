@@ -9,7 +9,7 @@ return {
 			require("quarto").setup({
 				lspFeatures = {
 					enabled = true,
-					languages = { "python", "julia", "rust" },
+					languages = { "python", "julia", "rust", "c", "cpp" },
 					diagnostics = {
 						enabled = true,
 						triggers = { "BufWrite" },
@@ -21,10 +21,7 @@ return {
 			})
 		end,
 	},
-	-- send code from python/r/qmd docuemts to a terminal
+	-- send code from python/r/qmd documents to a terminal
 	-- like ipython, R, bash
 	{ "jpalardy/vim-slime" },
-	-- paste an image to markdown from the clipboard
-	-- with :PasteImg,
-	"ekickx/clipboard-image.nvim",
 }

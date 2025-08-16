@@ -1,0 +1,45 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Testing rust + python chuncks\"\n",
+        "format:\n",
+        "  html:\n",
+        "    code-fold: true\n",
+        "execute:\n",
+        "  engine: jupyter\n",
+        "---"
+      ],
+      "id": "3b2a2445"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import plotly.express as px\n",
+        "\n",
+        "df = px.data.gapminder().query(\"country in ['Canada', 'Botswana']\")\n",
+        "\n",
+        "fig = px.line(df, x=\"lifeExp\", y=\"gdpPercap\", color=\"country\", text=\"year\")\n",
+        "fig.update_traces(textposition=\"bottom right\")\n",
+        "fig.show()"
+      ],
+      "id": "7e80b5a4",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/home/amn_suchi/anaconda3/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

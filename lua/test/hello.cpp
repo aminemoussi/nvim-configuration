@@ -1,36 +1,56 @@
 #include <iostream>
+#include <iterator>
+#include <sstream>
 #include <string>
 #include <vector>
+// #include <bits/stdc++.h>
+using namespace std;
 
-std::vector<std::string> solution(const std::string &s) {
-  std::vector<std::string> result;
-  std::string portion;
-  int size = s.length();
+// #define CLAMP_VAL(var, max, min)                                               \
+//   if (var > max) {                                                             \
+//     var = max;                                                                 \
+//   } else if (var < min) {                                                      \
+//     var = min;                                                                 \
+//   }
+//
+// #define DOUBLE_DIG(var) \
+//   if (var.size() == 1) { \
+//     var = "0" + var; \
+//   }
 
-  for (int i = 0; i < size; i += 2) {
+// std::string word_found(std::string word) {
+//   std::string new_w = "";
+//   // new_w = word.substr(1, -1);
+//   new_w = word.substr(1, word.size() - 1);
+//   new_w += word.front();
+//   new_w += "ay";
+//   // std::cout << "new word: " << new_w << std::endl;
+//   return new_w;
+// }
 
-    portion = s[i];
+int solution(int number) {
 
-    if ((i + 1) < size) {
-      portion += s[i + 1];
-    } else {
-      portion += "_";
+  int result = 0;
+
+  if (number <= 0) {
+    return result;
+  } else {
+
+    for (int i = 0; i < number; i++) {
+      if (((i % 3) == 0) or ((i % 5) == 0)) {
+        std::cout << "Number found: " << i << std::endl;
+        result += i;
+      }
     }
-
-    result.push_back(portion);
+    return result;
   }
-
-  return result; // Your code here
 }
 
 int main() {
-  std::string exmpl = "abcde";
-  std::vector<std::string> sol = solution(exmpl);
 
-  for (int i = 0; i < sol.size(); i++) {
-    std::cout << sol[i] << " ";
-  }
-  std::cout << std::endl;
+  std::cout << solution(10) << std::endl;
+
+  // std::cout << (15 % 3) << std::endl;
 
   return 0;
 }

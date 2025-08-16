@@ -14,3 +14,4 @@ if vim.fn.has("termguicolors") == 1 then
 end
 
 --vim.opt.autochdir = true
+--

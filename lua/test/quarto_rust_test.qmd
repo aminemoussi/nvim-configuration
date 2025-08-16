@@ -8,13 +8,15 @@ execute:
 ---
 
 
-```{rust}
-println!("Hello from Rust in Quarto!");
-```
+```{python}
+import plotly.express as px
 
+```
 
 ```{python}
-print("hi py.")
+df = px.data.gapminder().query("country in ['Canada', 'Botswana']")
 
+fig = px.line(df, x="lifeExp", y="gdpPercap", color="country", text="year")
+fig.update_traces(textposition="bottom right")
+fig.show()
 ```
-

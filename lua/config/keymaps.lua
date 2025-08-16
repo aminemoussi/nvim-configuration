@@ -183,7 +183,7 @@ local insert_code_chunk = function(lang)
 	vim.api.nvim_feedkeys(keys, "n", false)
 end
 
-local insert_r_chunk = function()
+local insert_rust_chunk = function()
 	insert_code_chunk("rust")
 end
 local insert_py_chunk = function()
@@ -201,14 +201,22 @@ end
 local insert_ojs_chunk = function()
 	insert_code_chunk("ojs")
 end
+local insert_c_chunk = function()
+	insert_code_chunk("c")
+end
+local insert_cpp_chunk = function()
+	insert_code_chunk("cpp")
+end
 
 -- Keymaps for code chunk insertion
-vim.keymap.set("n", "<leader>cr", insert_r_chunk, { desc = "Insert Rust chunk" })
+vim.keymap.set("n", "<leader>cr", insert_rust_chunk, { desc = "Insert Rust chunk" })
 vim.keymap.set("n", "<leader>cp", insert_py_chunk, { desc = "Insert Python chunk" })
 vim.keymap.set("n", "<leader>cl", insert_lua_chunk, { desc = "Insert Lua chunk" })
 vim.keymap.set("n", "<leader>cj", insert_julia_chunk, { desc = "Insert Julia chunk" })
 vim.keymap.set("n", "<leader>cb", insert_bash_chunk, { desc = "Insert Bash chunk" })
 vim.keymap.set("n", "<leader>co", insert_ojs_chunk, { desc = "Insert OJS chunk" })
+vim.keymap.set("n", "<leader>cc", insert_c_chunk, { desc = "Insert C chunk" })
+vim.keymap.set("n", "<leader>c+", insert_cpp_chunk, { desc = "Insert C++ chunk" })
 
 -- Terminal functions
 local function new_terminal(lang)
@@ -426,5 +434,5 @@ local function send_to_terminal()
 	vim.notify("Code sent to terminal", vim.log.levels.INFO)
 end
 
-vim.keymap.set("n", "<C-CR>", send_to_terminal, { desc = "Send code chunk to terminal" })
+-- vim.keymap.set("n", "<C-CR>", send_to_terminal, { desc = "Send code chunk to terminal" })
 vim.keymap.set("n", "<leader><CR>", send_to_terminal, { desc = "Send code chunk to terminal" })
