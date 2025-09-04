@@ -1,36 +1,46 @@
-return { -- paste an image from the clipboard or drag-and-drop
-	"HakonHarnes/img-clip.nvim",
-	event = "BufEnter",
-	ft = { "markdown", "quarto", "latex" },
-	opts = {
-		default = {
-			dir_path = "img",
-		},
-		filetypes = {
-			quarto = {
-				url_encode_path = true,
-				template = "![$CURSOR]($FILE_PATH)",
-				dir_path = function()
-					return vim.fn.expand("%:p:h") .. "/img" -- Creates img/ in same directory as current file
-				end,
-				drag_and_drop = {
-					download_images = false,
+return {
+	{
+		"3rd/image.nvim",
+		opts = {
+			backend = "kitty",
+			processor = "magick_cli", -- or "magick_rock"
+			integrations = {
+				markdown = {
+					enabled = true,
+					clear_in_insert_mode = false,
+					download_remote_images = true,
+					only_render_image_at_cursor = false,
+					only_render_image_at_cursor_mode = "popup", -- or "inline"
+					floating_windows = false,
+					filetypes = { "markdown", "vimwiki" },
+				},
+				neorg = {
+					enabled = true,
+					filetypes = { "norg" },
+				},
+				typst = {
+					enabled = true,
+					filetypes = { "typst" },
+				},
+				html = {
+					enabled = false,
+				},
+				css = {
+					enabled = false,
 				},
 			},
-			markdown = {
-				url_encode_path = true,
-				template = "![$CURSOR]($FILE_PATH)",
-				dir_path = function()
-					return vim.fn.expand("%:p:h") .. "/img" -- Creates img/ in same directory as current file
-				end,
-				drag_and_drop = {
-					download_images = false,
-				},
-			},
+			max_width = nil,
+			max_height = nil,
+			max_width_window_percentage = nil,
+			max_height_window_percentage = 50,
+			scale_factor = 1.0,
+			window_overlap_clear_enabled = false,
+			window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "snacks_notif", "scrollview", "scrollview_sign" },
+			editor_only_render_when_focused = false,
+			tmux_show_only_in_active_window = false,
+			hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" },
 		},
+		-- Optional: Add dependencies if needed
+		-- dependencies = { "nvim-lua/plenary.nvim" },
 	},
-	config = function(_, opts)
-		require("img-clip").setup(opts)
-		vim.keymap.set("n", "<leader>ii", ":PasteImage<cr>", { desc = "insert [i]mage from clipboard" })
-	end,
 }
