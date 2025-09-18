@@ -1,3 +1,5 @@
+vim.g.python3_host_prog = "/home/amn_suchi/.venv/bin/python3"
+
 require("config.lazy")
 require("config.keymaps")
 require("config.options")
@@ -12,6 +14,8 @@ vim.opt.timeoutlen = 300
 if vim.fn.has("termguicolors") == 1 then
 	vim.opt.termguicolors = true
 end
+
+vim.g.python3_host_prog = vim.fn.expand("/home/amn_suchi/anaconda3/bin/python")
 
 --vim.opt.autochdir = true
 --

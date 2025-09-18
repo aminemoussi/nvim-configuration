@@ -29,8 +29,8 @@ return {
 		vim.keymap.set("n", "<leader>ml", ":MoltenEvaluateLine<CR>", { desc = "evaluate line" })
 		vim.keymap.set("v", "<leader>mr", ":<C-u>MoltenEvaluateVisual<CR>gv", { desc = "execute visual selection" })
 		-- vim.keymap.set("n", "<leader>mp", ":MoltenImagePopup<CR>", { desc = "show image popup" })
-		vim.keymap.set("n", "<leader>mh", ":MoltenHideOutput<CR>", { desc = "hide output" })
-		vim.keymap.set("n", "<leader>ms", ":MoltenShowOutput<CR>", { desc = "show output" })
+		-- vim.keymap.set("n", "<leader>mh", ":MoltenHideOutput<CR>", { desc = "hide output" })
+		-- vim.keymap.set("n", "<leader>ms", ":MoltenShowOutput<CR>", { desc = "show output" })
 
 		-- Quarto chunk execution and navigation
 		vim.keymap.set("n", "<leader>rr", function()
